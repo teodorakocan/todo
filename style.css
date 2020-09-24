@@ -1,0 +1,36 @@
+.header { grid-area: header; }
+.newTasks { grid-area: main; }
+.header h1{
+    color: rgba(174, 66, 87, 0.2); 
+	font-size: 100px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.header input{
+    text-align: center;
+    width: 30%;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 1px solid rgb(146, 17, 17);
+}
+.header input:focus{
+    border: 1px solid rgb(219, 10, 10);
+    border-radius: 10px;
+    outline: none;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'header header header header header header'
+    'menu main main main right right'
+    'menu footer footer footer footer footer';
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.grid-container > div {
+  text-align: center;
+  padding: 20px 0;
+}
