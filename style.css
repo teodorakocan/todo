@@ -20,6 +20,29 @@
     outline: none;
 }
 
+.task{
+  text-align: left;
+  font-size: 32px;
+  height: 5px;
+  border: 1px solid black;
+  width: 40%;
+  margin: auto;
+  color: brown;
+}
+
+.filters{
+  border-radius: 10px;
+  border: 1px solid rgb(146, 17, 17);
+  background-color: rgba(247, 245, 245, 0.541);
+  font-size: 24px;
+  width: 60%;
+  margin: auto;
+}
+
+input[type=checkbox]{
+  width: 20px;
+}
+
 .grid-container {
   display: grid;
   grid-template-areas:
