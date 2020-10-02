@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>VanillaJS &#8226; TodoMVC</title>
 </head>
 <body style="background-color:rgb(234, 238, 238)">
@@ -16,57 +17,95 @@
 
             </div><br/><br/>
 
-            <div class="flex-container filters">
-                <p>Filters: </p>
-               <label style="text-align: left; padding: 5px;"> Active:</label><input type="checkbox">
+            <div class="flex-container">
+                <div id="numb"></div>
+                <div><button type="button" class="btn btn-default">All</button>
+                <button type="button" class="btn btn-default">Active</button>
+                <button type="button"class="btn btn-default">Complited</button></div>
             </div>
         </div>
-
-        
     </div>
 
     <script>
-        var input = document.getElementById('addTask');
+        var tasks = localStorage.getItem('tasks');
+        var allTasks = tasks.split(',');
         var array = [];
-        if(localStorage.getItem("tasks") != null){
-                var allTasks = localStorage.getItem('tasks');
-                if(allTasks.length > 1)
-                {
-                    var tasks = allTasks.split(',');
-                    for(let i=0; i<tasks.length; i++){
-                        var task = document.createElement('div');
-                        task.innerText = tasks[i];
-                        task.style.backgroundColor="white";
-                        task.classList.add("jumbotron");
-                        task.classList.add("task");
-                        document.querySelector("#tasks").appendChild(task);
-                    }
-                }
-                else{
-                    var task = document.createElement('div');
-                    task.innerText = tasks;
-                    task.style.backgroundColor="white";
-                    task.classList.add("jumbotron");
-                    task.classList.add("task");
-                    document.querySelector("#tasks").appendChild(task);
-                }
+        var numberOfTasks = 0;
+        if(allTasks.length > 1)
+        {
+            for(let i = 0; i< allTasks.length; i++)
+            {
+                array.push(allTasks[i])
+                numberOfTasks++;
+            }
         }
+        else{
+            array.push(allTasks)
+            numberOfTasks++;
+        }
+        var numb = document.createElement('label');
+        numb.innerText = numberOfTasks + " items left";
+        document.querySelector("#numb").appendChild(numb);
+        
+        var input = document.getElementById('addTask');
+        if(localStorage.getItem("tasks") != null){
+            if(allTasks.length > 1)
+            {
+                for(let i=0; i < allTasks.length; i++){
+                    addTask(allTasks[i]);
+                }
+            }
+            else{
+                addTask(allTasks);
+            }
+        }
+
         input.addEventListener("keyup", function(event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
                 if(input.value != '')
                 {
-                    var task = document.createElement('div');
-                    task.innerText = input.value;
-                    task.style.backgroundColor="white";
-                    task.classList.add("jumbotron");
-                    task.classList.add("task");
-                    document.querySelector("#tasks").appendChild(task);
+                    addTask(input.value);
                     array.push(input.value);
                     localStorage.setItem("tasks", array);
                 }
             }
-        }); 
+        });
+
+        function addTask(value){
+            var task = document.createElement('div');
+            task.innerText = value;
+            task.style.backgroundColor="white";
+            task.classList.add("jumbotron");
+            task.classList.add("task");
+            task.setAttribute("id", value);
+            document.querySelector("#tasks").appendChild(task);
+            var deletebtn = document.createElement('button');
+            deletebtn.innerHTML = '<i class = "fa fa-close"></i>';
+            deletebtn.classList.add("btn");
+            deletebtn.setAttribute("id", "deletebtn");
+            deletebtn.onclick = function(){
+                DeleteTask(value);
+            };
+            deletebtn.style.float = "right";
+            deletebtn.style.border="none";
+            document.querySelector("#"+value).appendChild(deletebtn);
+        } 
+
+        function DeleteTask(value){
+            var allTasks = localStorage.getItem("tasks");
+            localStorage.removeItem('tasks');
+            var tasks = allTasks.split(',');
+            var array = [];
+            for(let i=0; i < tasks.length; i++){
+                if(tasks[i] != value){
+                    array.push(tasks[i]);
+                }
+            }
+            localStorage.setItem('tasks', array);
+            location.reload();
+        }
+
     </script>
 </body>
 </html>

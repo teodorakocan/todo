@@ -6,6 +6,26 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.flex-container {
+  display: flex;
+  width: 50%;
+  background-color: rgb(234, 238, 238);
+  margin: auto;
+}
+
+button.btn{
+  border-color: rgb(75, 120, 204);
+}
+
+.flex-container > div {
+  color: brown;
+  width: 300px;
+  margin: 10px;
+  text-align: center;
+  line-height: 70px;
+  font-size: 24px;
+}
+
 .header input{
     text-align: center;
     width: 30%;
