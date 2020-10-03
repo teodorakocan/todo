@@ -19,47 +19,47 @@
 
             <div class="flex-container">
                 <div id="numb"></div>
-                <div><button type="button" class="btn btn-default">All</button>
-                <button type="button" class="btn btn-default">Active</button>
-                <button type="button"class="btn btn-default">Complited</button></div>
+                <div>
+                <button type="button" class="btn btn-default" onclick="AllTasks()">All</button>
+                <button type="button" class="btn btn-default" onclick="ActiveTasks()">Active</button>
+                <button type="button"class="btn btn-default" onclick="ComplitedTasks()">Complited</button></div>
             </div>
         </div>
     </div>
 
     <script>
-        var tasks = localStorage.getItem('tasks');
-        var allTasks = tasks.split(',');
-        var array = [];
-        var numberOfTasks = 0;
-        if(allTasks.length > 1)
-        {
-            for(let i = 0; i< allTasks.length; i++)
-            {
-                array.push(allTasks[i])
-                numberOfTasks++;
-            }
-        }
-        else{
-            array.push(allTasks)
-            numberOfTasks++;
-        }
         var numb = document.createElement('label');
-        numb.innerText = numberOfTasks + " items left";
-        document.querySelector("#numb").appendChild(numb);
-        
-        var input = document.getElementById('addTask');
-        if(localStorage.getItem("tasks") != null){
-            if(allTasks.length > 1)
-            {
-                for(let i=0; i < allTasks.length; i++){
-                    addTask(allTasks[i]);
-                }
-            }
-            else{
-                addTask(allTasks);
-            }
+        var array = [];
+        var allTasks;
+        var tasks;
+        var complited = localStorage.getItem("complited");
+        var active = localStorage.getItem("active");
+        var complited_array = [];
+        var active_array = [];
+        if(complited != null && complited != "")
+        {
+            complited_array = complited.split(',');
+        }
+        if(active != null && active != "")
+        {
+            active_array = active.split(',');
         }
 
+        if(localStorage.getItem("tasks") != null && localStorage.getItem("tasks") != "")
+        {
+            allTasks = localStorage.getItem('tasks');
+            tasks = allTasks.split(',');
+            numberOfTasks = 0;
+            for(let i = 0; i< tasks.length; i++)
+            {
+                array.push(tasks[i]);
+                addTask(tasks[i]);
+            }
+            numb.innerText = active_array.length + " items left";
+            document.querySelector("#numb").appendChild(numb);
+        }
+
+        var input = document.getElementById('addTask');
         input.addEventListener("keyup", function(event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
@@ -68,18 +68,79 @@
                     addTask(input.value);
                     array.push(input.value);
                     localStorage.setItem("tasks", array);
+                    localStorage.setItem("active", array);
+                    localStorage.setItem("complited", complited_array);
+                    location.reload();
                 }
             }
         });
 
+        function AllTasks(){
+            for(let i = 0; i < array.length; i++)
+            {
+                var myobj = document.getElementById("div_" + array[i]);
+                myobj.remove();
+                addTask(array[i]);
+            }
+        }
+
+        function ActiveTasks(){
+            var tasks = document.getElementById("tasks");
+            for(let i = 0; i < tasks.children.length; i++)
+            {
+                var myobj = document.getElementById(tasks.children[i].id);
+                i--;
+                myobj.remove();
+            }
+
+            if(active_array.length > 0){
+                for(let i = 0; i < active_array.length; i++)
+                {
+                    addTask(active_array[i]);
+                }
+            }
+        }
+
+        function ComplitedTasks(){
+            var tasks = document.getElementById("tasks");
+            for(let i = 0; i < tasks.children.length; i++)
+            {
+                var myobj = document.getElementById(tasks.children[i].id);
+                i--;
+                myobj.remove();
+            }
+
+            if(complited_array.length > 0){
+                for(let i = 0; i < complited_array.length; i++)
+                {
+                    addTask(complited_array[i]);
+                }
+            }
+        }
+
         function addTask(value){
-            var task = document.createElement('div');
+            var newTask = document.createElement('div');
+            newTask.setAttribute("id", "div_"+ value);
+            newTask.style.backgroundColor="white";
+            newTask.classList.add("jumbotron");
+            newTask.classList.add("task");
+            document.querySelector("#tasks").appendChild(newTask);
+            
+            var input = document.createElement('input');
+            input.setAttribute("type", "checkbox");
+            input.setAttribute("id", "input_"+ value);
+            input.style.float = "left";
+            input.onchange = function(){
+                CrossTask(value);
+            };
+            document.querySelector("#div_"+value).appendChild(input);
+
+            var task = document.createElement('label');
             task.innerText = value;
-            task.style.backgroundColor="white";
-            task.classList.add("jumbotron");
-            task.classList.add("task");
             task.setAttribute("id", value);
-            document.querySelector("#tasks").appendChild(task);
+            task.style.float = "left";
+            document.querySelector("#div_"+value).appendChild(task);
+
             var deletebtn = document.createElement('button');
             deletebtn.innerHTML = '<i class = "fa fa-close"></i>';
             deletebtn.classList.add("btn");
@@ -89,23 +150,100 @@
             };
             deletebtn.style.float = "right";
             deletebtn.style.border="none";
-            document.querySelector("#"+value).appendChild(deletebtn);
+            document.querySelector("#div_"+ value).appendChild(deletebtn);
+
+            if(complited_array.length > 0)
+            {
+                for(let i = 0; i < complited_array.length; i++){
+                    if(complited_array[i] == value)
+                    {
+                        task.style.textDecoration = "line-through"
+                        input.checked = true;
+                    }
+                }
+            }
         } 
 
         function DeleteTask(value){
-            var allTasks = localStorage.getItem("tasks");
             localStorage.removeItem('tasks');
-            var tasks = allTasks.split(',');
             var array = [];
-            for(let i=0; i < tasks.length; i++){
+            var actives = [];
+            var complited = [];
+            for(let i = 0; i < tasks.length; i++){
                 if(tasks[i] != value){
                     array.push(tasks[i]);
                 }
             }
+
+            if(active_array.length > 0)
+            {
+                for(let i = 0; i < active_array.length; i++){
+                    if(active_array[i] != value){
+                        actives.push(active_array[i]);
+                    }
+                } 
+            }
+
+            if(complited_array.length > 0)
+            {
+                for(let i = 0; i < complited_array.length; i++){
+                    if(complited_array[i] != value){
+                        complited.push(complited_array[i]);
+                    }
+                }
+            }
+
             localStorage.setItem('tasks', array);
+            localStorage.setItem('active', actives);
+            localStorage.setItem('complited', complited);
             location.reload();
         }
 
+        function CrossTask(value){
+            var allActive = []; 
+            var allComplited = [];
+
+            if(document.getElementById("input_" +value).checked){
+                document.getElementById(value).style.textDecoration="line-through";
+                if(localStorage.getItem("complited") != "")
+                {
+                    allComplited = localStorage.getItem("complited").split(',');
+                }
+                active_array = localStorage.getItem("active").split(',');
+                for(let i = 0; i < active_array.length; i++){
+                    if(active_array[i] == value)
+                    {
+                        allComplited.push(active_array[i]);
+                    }
+                    else{
+                        allActive.push(active_array[i]);
+                    }
+                }
+
+                localStorage.setItem('active', allActive);
+                localStorage.setItem('complited', allComplited);
+            }
+            else{
+                document.getElementById(value).style.textDecoration="none";
+                if(localStorage.getItem("active") != "")
+                {
+                    allActive = localStorage.getItem("active").split(',');
+                }
+                complited_array = localStorage.getItem("complited").split(',');
+                for(let i = 0; i < complited_array.length; i++){
+                    if(complited_array[i] == value)
+                    {
+                        allActive.push(complited_array[i]);
+                    }
+                    else{
+                        allComplited.push(complited_array[i]);
+                    }
+                }
+
+                localStorage.setItem('active', allActive);
+                localStorage.setItem('complited', allComplited);
+            }
+        }
     </script>
 </body>
 </html>
