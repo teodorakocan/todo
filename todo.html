@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>VanillaJS &#8226; TodoMVC</title>
 </head>
@@ -19,45 +19,53 @@
 
             <div class="flex-container">
                 <div id="numb"></div>
-                <div>
-                <button type="button" class="btn btn-default" onclick="AllTasks()">All</button>
-                <button type="button" class="btn btn-default" onclick="ActiveTasks()">Active</button>
-                <button type="button"class="btn btn-default" onclick="ComplitedTasks()">Complited</button></div>
+                <div> 
+                <button type="button" class="btn active" id="all" onclick="AllTasks()">All</button>
+                <button type="button" class="btn" id="active" onclick="ActiveTasks()">Active</button>
+                <button type="button"class="btn" id="complited" onclick="ComplitedTasks()">Complited</button></div>
             </div>
         </div>
     </div>
 
     <script>
-        var numb = document.createElement('label');
-        var array = [];
-        var allTasks;
-        var tasks;
-        var complited = localStorage.getItem("complited");
-        var active = localStorage.getItem("active");
-        var complited_array = [];
-        var active_array = [];
-        if(complited != null && complited != "")
-        {
-            complited_array = complited.split(',');
+        var activeTasks, complitedTasks, allTasks;
+        var numOfActiveTasks = 0;
+        var numbOfComplited = 0;
+        if(localStorage.getItem("tasks") == null || localStorage.getItem("tasks") == ""){
+            activeTasks = [];
+            complitedTasks = [];
+            allTasks = [];
+            localStorage.setItem("tasks", allTasks);
+            localStorage.setItem("active", activeTasks);
         }
-        if(active != null && active != "")
-        {
-            active_array = active.split(',');
+        else if(localStorage.getItem("tasks") != ""){
+            activeTasks = localStorage.getItem("active").split(',');
+            allTasks = localStorage.getItem("tasks").split(',');
+            if(localStorage.getItem("complited") == null)
+            {
+                complitedTasks = [];
+                localStorage.setItem("complited", complitedTasks);
+            }
+            else{
+                complitedTasks = localStorage.getItem("complited").split(',');
+            }
+            if(activeTasks[0] != ""){
+                numOfActiveTasks = activeTasks.length;
+            }
+            else{
+                numOfActiveTasks = 0;
+            }
+
+            for(let i = 0; i< allTasks.length; i++)
+            {
+                addTask(allTasks[i]);
+            }
         }
 
-        if(localStorage.getItem("tasks") != null && localStorage.getItem("tasks") != "")
-        {
-            allTasks = localStorage.getItem('tasks');
-            tasks = allTasks.split(',');
-            numberOfTasks = 0;
-            for(let i = 0; i< tasks.length; i++)
-            {
-                array.push(tasks[i]);
-                addTask(tasks[i]);
-            }
-            numb.innerText = active_array.length + " items left";
-            document.querySelector("#numb").appendChild(numb);
-        }
+        var numb = document.createElement('label');
+        numb.setAttribute("id", "numbOfActive")
+        numb.innerText = numOfActiveTasks + " items left";
+        document.querySelector("#numb").appendChild(numb);
 
         var input = document.getElementById('addTask');
         input.addEventListener("keyup", function(event) {
@@ -66,57 +74,14 @@
                 if(input.value != '')
                 {
                     addTask(input.value);
-                    array.push(input.value);
-                    localStorage.setItem("tasks", array);
-                    localStorage.setItem("active", array);
-                    localStorage.setItem("complited", complited_array);
+                    activeTasks.push(input.value);
+                    allTasks.push(input.value);
+                    localStorage.setItem("tasks", allTasks);
+                    localStorage.setItem("active", activeTasks);
                     location.reload();
                 }
             }
         });
-
-        function AllTasks(){
-            for(let i = 0; i < array.length; i++)
-            {
-                var myobj = document.getElementById("div_" + array[i]);
-                myobj.remove();
-                addTask(array[i]);
-            }
-        }
-
-        function ActiveTasks(){
-            var tasks = document.getElementById("tasks");
-            for(let i = 0; i < tasks.children.length; i++)
-            {
-                var myobj = document.getElementById(tasks.children[i].id);
-                i--;
-                myobj.remove();
-            }
-
-            if(active_array.length > 0){
-                for(let i = 0; i < active_array.length; i++)
-                {
-                    addTask(active_array[i]);
-                }
-            }
-        }
-
-        function ComplitedTasks(){
-            var tasks = document.getElementById("tasks");
-            for(let i = 0; i < tasks.children.length; i++)
-            {
-                var myobj = document.getElementById(tasks.children[i].id);
-                i--;
-                myobj.remove();
-            }
-
-            if(complited_array.length > 0){
-                for(let i = 0; i < complited_array.length; i++)
-                {
-                    addTask(complited_array[i]);
-                }
-            }
-        }
 
         function addTask(value){
             var newTask = document.createElement('div');
@@ -149,53 +114,78 @@
                 DeleteTask(value);
             };
             deletebtn.style.float = "right";
-            deletebtn.style.border="none";
+            deletebtn.style.border= "none";
+            deletebtn.style.backgroundColor = "white";
             document.querySelector("#div_"+ value).appendChild(deletebtn);
 
-            if(complited_array.length > 0)
+            if(complitedTasks.length > 0)
             {
-                for(let i = 0; i < complited_array.length; i++){
-                    if(complited_array[i] == value)
-                    {
-                        task.style.textDecoration = "line-through"
-                        input.checked = true;
+                if(complitedTasks.includes(value)){
+                    for(let i = 0; i < complitedTasks.length; i++){
+                        if(complitedTasks[i] == value)
+                        {
+                            task.style.textDecoration = "line-through"
+                            input.checked = true;
+                        }
                     }
                 }
             }
-        } 
+        }
+
+        function CheckFilter(){
+            var btnAll = document.getElementById("all");
+            var btnComplited = document.getElementById("complited");
+            var btnActive = document.getElementById("active");
+
+            if(btnAll.classList.contains("active")){
+                AllTasks();
+            }
+            else if(btnComplited.classList.contains("active")){
+                ComplitedTasks();
+            }
+            else if(btnActive.classList.contains("active")){
+                ActiveTasks();
+            }
+        }
 
         function DeleteTask(value){
-            localStorage.removeItem('tasks');
             var array = [];
-            var actives = [];
+            var active = [];
             var complited = [];
-            for(let i = 0; i < tasks.length; i++){
-                if(tasks[i] != value){
-                    array.push(tasks[i]);
+            for(let i = 0; i < allTasks.length; i++){
+                if(allTasks[i] != value){
+                    array.push(allTasks[i]);
                 }
             }
 
-            if(active_array.length > 0)
+            if(activeTasks.length > 0)
             {
-                for(let i = 0; i < active_array.length; i++){
-                    if(active_array[i] != value){
-                        actives.push(active_array[i]);
-                    }
-                } 
-            }
-
-            if(complited_array.length > 0)
-            {
-                for(let i = 0; i < complited_array.length; i++){
-                    if(complited_array[i] != value){
-                        complited.push(complited_array[i]);
-                    }
+                if(activeTasks.includes(value)){
+                    localStorage.removeItem("active");
+                    for(let i = 0; i < activeTasks.length; i++){
+                        if(activeTasks[i] != value){
+                            active.push(activeTasks[i]);
+                        }
+                    } 
+                    localStorage.setItem("active", active);
                 }
             }
 
-            localStorage.setItem('tasks', array);
-            localStorage.setItem('active', actives);
-            localStorage.setItem('complited', complited);
+            if(complitedTasks.length > 0)
+            {
+                if(complitedTasks.includes(value)){
+                    localStorage.removeItem("complited");
+                    for(let i = 0; i < complitedTasks.length; i++){
+                        if(complitedTasks[i] != value){
+                            complited.push(complitedTasks[i]);
+                        }
+                    }
+                    localStorage.setItem("complited", complited);
+                }
+            }
+
+            localStorage.removeItem("tasks");
+            localStorage.setItem("tasks", array);
             location.reload();
         }
 
@@ -220,8 +210,13 @@
                     }
                 }
 
+                activeTasks = allActive;
+                complitedTasks = allComplited;
                 localStorage.setItem('active', allActive);
                 localStorage.setItem('complited', allComplited);
+                numbOfComplited = complitedTasks.length;
+                numOfActiveTasks = activeTasks.length;
+                ReloadNumbOfTasks();
             }
             else{
                 document.getElementById(value).style.textDecoration="none";
@@ -240,8 +235,99 @@
                     }
                 }
 
+                activeTasks = allActive;
+                complitedTasks = allComplited;
                 localStorage.setItem('active', allActive);
                 localStorage.setItem('complited', allComplited);
+                numbOfComplited = complitedTasks.length;
+                numOfActiveTasks = activeTasks.length;
+                ReloadNumbOfTasks();
+            }
+            CheckFilter();
+        }
+
+        function ReloadNumbOfTasks(){
+            var numb = document.getElementById('numbOfActive');
+            if(activeTasks[0] != ""){
+                numb.innerText = numOfActiveTasks + " items left";
+            }else{
+                numb.innerText = "0 items left";
+            }
+        }
+
+        function AllTasks(){
+            var btnAll = document.getElementById("all");
+            btnAll.classList.add("active");
+            var btnComplited = document.getElementById("complited");
+            btnComplited.classList.remove("active");
+            var btnActive = document.getElementById("active");
+            btnActive.classList.remove("active");
+
+            var tasks = document.getElementById("tasks");
+            for(let i = 0; i < tasks.children.length; i++)
+            {
+                var myobj = document.getElementById(tasks.children[i].id);
+                i--;
+                myobj.remove();
+            }
+
+            if(localStorage.getItem("tasks") != ""){
+                allTasks = localStorage.getItem("tasks").split(',');
+                for(let i = 0; i < allTasks.length; i++)
+                {
+                    addTask(allTasks[i]);
+                }
+            }
+        }
+
+        function ActiveTasks(){
+            var btnAll = document.getElementById("all");
+            btnAll.classList.remove("active");
+            var btnComplited = document.getElementById("complited");
+            btnComplited.classList.remove("active");
+            var btnActive = document.getElementById("active");
+            btnActive.classList.add("active");
+
+            var tasks = document.getElementById("tasks");
+            for(let i = 0; i < tasks.children.length; i++)
+            {
+                var myobj = document.getElementById(tasks.children[i].id);
+                i--;
+                myobj.remove();
+            }
+
+            if(localStorage.getItem("active") != ""){
+                activeTasks = localStorage.getItem("active").split(',');
+                for(let i = 0; i < activeTasks.length; i++)
+                {
+                    addTask(activeTasks[i]);
+                }
+            }
+        }
+
+        function ComplitedTasks(){
+            var btnAll = document.getElementById("all");
+            btnAll.classList.remove("active");
+            var btnComplited = document.getElementById("complited");
+            btnComplited.classList.add("active");
+            var btnActive = document.getElementById("active");
+            btnActive.classList.remove("active");
+
+            var tasks = document.getElementById("tasks");
+            for(let i = 0; i < tasks.children.length; i++)
+            {
+                var myobj = document.getElementById(tasks.children[i].id);
+                i--;
+                myobj.remove();
+            }
+
+            if(localStorage.getItem("complited") != ""){
+                complitedTasks = localStorage.getItem("complited").split(',');
+                numbOfComplited = complitedTasks.length;
+                for(let i = 0; i < complitedTasks.length; i++)
+                {
+                    addTask(complitedTasks[i]);
+                }
             }
         }
     </script>

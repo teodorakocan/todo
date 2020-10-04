@@ -2,7 +2,7 @@
 .newTasks { grid-area: main; }
 .header h1{
     color: rgba(174, 66, 87, 0.2); 
-	font-size: 100px;
+	  font-size: 100px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -15,6 +15,11 @@
 
 button.btn{
   border-color: rgb(75, 120, 204);
+}
+
+.btn.active{
+  background-color: rgb(75, 120, 204);
+  color: white;
 }
 
 .flex-container > div {
@@ -72,8 +77,4 @@ button.btn{
 .grid-container > div {
   text-align: center;
   padding: 20px 0;
-}
-
-.checkbox-round {
-  border-radius: 50%;
 }
