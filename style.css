@@ -6,6 +6,21 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'header header header header header header'
+    'menu main main main right right'
+    'menu footer footer footer footer footer';
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.grid-container > div {
+  text-align: center;
+  padding: 20px 0;
+}
+
 .flex-container {
   display: flex;
   width: 50%;
@@ -13,18 +28,55 @@
   margin: auto;
 }
 
-button.btn{
+#tasks.flex-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#tasks.flex-container > div {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  width: 60%;
+  height: 80px;
+  margin: 10px auto;
+  text-align: center;
+  line-height: 75px;
+  font-size: 30px;
+}
+
+#deletebtn{
   border-color: rgb(75, 120, 204);
+  height: 20px;
+  width: 20px;
+  background-color: white;
+  border: none;
+  margin-left: 120px;
+}
+
+.checkbox{
+  float: left;
+  margin: auto;
+  margin-top: 13px;
+  transform: scale(0.5);
+}
+
+.btn{
+  border-color:  rgb(75, 120, 204);
+  height: 30px;
+  border-radius: 5px;
 }
 
 .btn.active{
+  outline: none;
   background-color: rgb(75, 120, 204);
   color: white;
 }
 
 .flex-container > div {
   color: brown;
-  width: 300px;
+  width: 400px;
   margin: 10px;
   text-align: center;
   line-height: 70px;
@@ -62,19 +114,4 @@ button.btn{
   font-size: 24px;
   width: 60%;
   margin: auto;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-areas:
-    'header header header header header header'
-    'menu main main main right right'
-    'menu footer footer footer footer footer';
-  grid-gap: 10px;
-  padding: 10px;
-}
-
-.grid-container > div {
-  text-align: center;
-  padding: 20px 0;
 }

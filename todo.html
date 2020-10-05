@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>VanillaJS &#8226; TodoMVC</title>
 </head>
 <body style="background-color:rgb(234, 238, 238)">
     <div class="grid-container">
         <div class="header">
-            <h1>todos</h1>
-            <input calss= "addTask" type="text" id="addTask" placeholder="What needs to be done?"><br/><br/>
-            <div id="tasks">
+            <h1>todos<br/>
+                <input calss= "addTask" type="text" id="addTask" placeholder="What needs to be done?">
+            </h1>
+            <br/><br/>
+            <div id="tasks" class="flex-container">
 
             </div><br/><br/>
 
@@ -87,14 +88,13 @@
             var newTask = document.createElement('div');
             newTask.setAttribute("id", "div_"+ value);
             newTask.style.backgroundColor="white";
-            newTask.classList.add("jumbotron");
             newTask.classList.add("task");
             document.querySelector("#tasks").appendChild(newTask);
             
             var input = document.createElement('input');
             input.setAttribute("type", "checkbox");
             input.setAttribute("id", "input_"+ value);
-            input.style.float = "left";
+            input.classList.add("checkbox")
             input.onchange = function(){
                 CrossTask(value);
             };
@@ -108,14 +108,10 @@
 
             var deletebtn = document.createElement('button');
             deletebtn.innerHTML = '<i class = "fa fa-close"></i>';
-            deletebtn.classList.add("btn");
             deletebtn.setAttribute("id", "deletebtn");
             deletebtn.onclick = function(){
                 DeleteTask(value);
             };
-            deletebtn.style.float = "right";
-            deletebtn.style.border= "none";
-            deletebtn.style.backgroundColor = "white";
             document.querySelector("#div_"+ value).appendChild(deletebtn);
 
             if(complitedTasks.length > 0)
