@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>VanillaJS &#8226; TodoMVC</title>
+</head>
+<body>
+    <div class="grid-container">
+        <div class="header">
+            <h1>todos<br/>
+                <input calss= "addTask" type="text" id="addTask" placeholder="What needs to be done?">
+            </h1>
+            
+            <div id="tasks" class="flex-container">
+
+            </div><br/><br/>
+
+            <div class="flex-container">
+                <div id="number"></div>
+                <div> 
+                <button type="button" class="btn active" id="all" onclick="allTasks()">All</button>
+                <button type="button" class="btn" id="active" onclick="activeTasks()">Active</button>
+                <button type="button"class="btn" id="completed" onclick="completedTasks()">Completed</button></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>

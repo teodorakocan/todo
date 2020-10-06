@@ -1,0 +1,135 @@
+body{
+  background-color:rgb(234, 238, 238);
+}
+
+.header { grid-area: header; }
+.newTasks { grid-area: main; }
+.header h1{
+    color: rgba(174, 66, 87, 0.2); 
+	  font-size: 100px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'header header header header header header'
+    'menu main main main right right'
+    'menu footer footer footer footer footer';
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.grid-container > div {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.flex-container {
+  display: flex;
+  width: 50%;
+  background-color: rgb(234, 238, 238);
+  margin: auto;
+}
+
+#tasks.flex-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#tasks.flex-container > div {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  width: 60%;
+  height: 80px;
+  margin: 10px auto;
+  text-align: center;
+  line-height: 75px;
+  font-size: 30px;
+}
+
+#deletebtn{
+  border-color: rgb(75, 120, 204);
+  height: 20px;
+  width: 20px;
+  background-color: white;
+  border: none;
+  margin-left: 120px;
+
+}
+
+.checkbox{
+  float: left;
+  margin: auto;
+  margin-top: 13px;
+  transform: scale(0.5);
+}
+
+.btn{
+  border-color:  rgb(75, 120, 204);
+  height: 30px;
+  border-radius: 5px;
+}
+
+.btn.active{
+  outline: none;
+  background-color: rgb(75, 120, 204);
+  color: white;
+}
+
+.flex-container > div {
+  color: brown;
+  width: 400px;
+  margin: 10px;
+  text-align: center;
+  line-height: 70px;
+  font-size: 24px;
+}
+
+.header input{
+    text-align: center;
+    width: 30%;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 1px solid rgb(146, 17, 17);
+}
+.header input:focus{
+    border: 1px solid rgb(219, 10, 10);
+    border-radius: 10px;
+    outline: none;
+}
+
+.task{
+  text-align: left;
+  font-size: 32px;
+  height: 5px;
+  border: 1px solid black;
+  width: 40%;
+  margin: auto;
+  color: brown;
+}
+
+.filters{
+  border-radius: 10px;
+  border: 1px solid rgb(146, 17, 17);
+  background-color: rgba(247, 245, 245, 0.541);
+  font-size: 24px;
+  width: 60%;
+  margin: auto;
+}
+
+.taskarea{
+  float:left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100px;
+  display: block;
+  overflow: hidden
+}
+
+.taskarea:hover{
+  overflow: visible;
+}
