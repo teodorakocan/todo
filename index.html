@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>VanillaJS &#8226; TodoMVC</title>
 </head>
-<body style="background-color:rgb(234, 238, 238)">
+<body>
     <div class="grid-container">
         <div class="header">
             <h1>todos<br/>
@@ -19,7 +19,7 @@
             </div><br/><br/>
 
             <div class="flex-container">
-                <div id="numb"></div>
+                <div id="number"></div>
                 <div> 
                 <button type="button" class="btn active" id="all" onclick="allTasks()">All</button>
                 <button type="button" class="btn" id="active" onclick="activeTasks()">Active</button>
@@ -28,193 +28,6 @@
         </div>
     </div>
 
-    <script>
-        const tasksString = localStorage.getItem("tasks");
-        let tasks = [];
-        let numOfActiveTasks = 0;
-        if(!tasksString){
-            localStorage.setItem("tasks", tasks);
-        }else{
-            tasks = JSON.parse(tasksString);
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-            for(let i = 0; i< tasks.length; i++){
-                addTask(tasks[i]);
-            }
-        }
-
-        let numb = document.createElement('label');
-        numb.setAttribute("id", "numbOfActive")
-        numb.innerText = numOfActiveTasks + " items left";
-        document.querySelector("#numb").appendChild(numb);
-
-        let input = document.getElementById('addTask');
-        input.addEventListener("keyup", function(event) {
-            if (event.keyCode === 13) {
-                event.preventDefault();
-                if(input.value != ''){
-                    task = {name: input.value, completed: false}
-                    tasks.push(task);
-                    addTask(task);
-                    localStorage.setItem("tasks", JSON.stringify(tasks));
-                }
-            }
-        });
-
-        function addTask(value){
-            let newTask = document.createElement('div');
-            newTask.setAttribute("id", "div_"+ tasks.indexOf(value));
-            newTask.style.backgroundColor="white";
-            newTask.classList.add("task");
-            document.querySelector("#tasks").appendChild(newTask);
-            
-            let input = document.createElement('input');
-            input.setAttribute("type", "checkbox");
-            input.setAttribute("id", "input_"+ tasks.indexOf(value));
-            input.classList.add("checkbox")
-            input.onchange = function(){
-                crossTask(value);
-            };
-            document.querySelector("#div_" + tasks.indexOf(value)).appendChild(input);
-
-            let task = document.createElement('label');
-            task.innerText = value.name;
-            task.setAttribute("id", tasks.indexOf(value));
-            task.style.float = "left";
-            document.querySelector("#div_" + tasks.indexOf(value)).appendChild(task);
-
-            let deletebtn = document.createElement('button');
-            deletebtn.innerHTML = '<i class = "fa fa-close"></i>';
-            deletebtn.setAttribute("id", "deletebtn");
-            deletebtn.onclick = function(){
-                deleteTask(value);
-            };
-            document.querySelector("#div_" + tasks.indexOf(value)).appendChild(deletebtn);
-
-            if(value.completed){
-                task.style.textDecoration = "line-through"
-                input.checked = true;
-            }else{
-                numOfActiveTasks++;
-            }
-        }
-
-        function deleteTask(value){
-            let deleted = [];
-            let index = tasks.indexOf(value);
-            for(let i = 0; i < tasks.length; i++){
-                if(index != i){
-                    deleted.push(tasks[i])
-                }
-            }
-
-            tasks = deleted;
-            localStorage.removeItem("tasks");
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-            location.reload();
-        }
-
-        function crossTask(value){
-            if(document.getElementById("input_" + tasks.indexOf(value)).checked){
-                tasks[tasks.indexOf(value)].completed = true;
-                localStorage.setItem("tasks", JSON.stringify(tasks));
-            }
-            else{
-                tasks[tasks.indexOf(value)].completed = false;
-                localStorage.setItem("tasks", JSON.stringify(tasks));
-            }
-            reloadNumbOfTasks();
-            checkFilter();
-        }
-
-        function checkFilter(){
-            let btnAll = document.getElementById("all");
-            let btnComplited = document.getElementById("completed");
-            let btnActive = document.getElementById("active");
-
-            if(btnAll.classList.contains("active")){
-                allTasks();
-            }else if(btnComplited.classList.contains("active")){
-                completedTasks();
-            }else if(btnActive.classList.contains("active")){
-                activeTasks();
-            }
-        }
-
-        function reloadNumbOfTasks(){
-            let numb = document.getElementById('numbOfActive');
-            let number = 0;
-            for(let i = 0; i < tasks.length; i++){
-                if(!tasks[i].completed){
-                    number++;
-                }
-            }
-            numb.innerText = number + " items left"
-        }
-
-        function allTasks(){
-            let btnAll = document.getElementById("all");
-            btnAll.classList.add("active");
-            let btnComplited = document.getElementById("completed");
-            btnComplited.classList.remove("active");
-            let btnActive = document.getElementById("active");
-            btnActive.classList.remove("active");
-
-            let allTasks = document.getElementById("tasks");
-            for(let i = 0; i < allTasks.children.length; i++){
-                let myobj = document.getElementById(allTasks.children[i].id);
-                i--;
-                myobj.remove();
-            }
-
-            for(let i = 0; i < tasks.length; i++){
-                addTask(tasks[i]);
-            }
-        }
-
-        function activeTasks(){
-            let btnAll = document.getElementById("all");
-            btnAll.classList.remove("active");
-            let btnComplited = document.getElementById("completed");
-            btnComplited.classList.remove("active");
-            let btnActive = document.getElementById("active");
-            btnActive.classList.add("active");
-
-            let allTasks = document.getElementById("tasks");
-            for(let i = 0; i < allTasks.children.length; i++){
-                let myobj = document.getElementById(allTasks.children[i].id);
-                i--;
-                myobj.remove();
-            }
-
-            for(let i = 0; i < tasks.length; i++){
-                if(!tasks[i].completed){
-                    addTask(tasks[i]);
-                }
-            }
-        }
-
-        function completedTasks(){
-            let btnAll = document.getElementById("all");
-            btnAll.classList.remove("active");
-            let btnComplited = document.getElementById("completed");
-            btnComplited.classList.add("active");
-            let btnActive = document.getElementById("active");
-            btnActive.classList.remove("active");
-
-            let allTasks = document.getElementById("tasks");
-            for(let i = 0; i < allTasks.children.length; i++)
-            {
-                let myobj = document.getElementById(allTasks.children[i].id);
-                i--;
-                myobj.remove();
-            }
-
-            for(let i = 0; i < tasks.length; i++){
-                if(tasks[i].completed){
-                    addTask(tasks[i]);
-                }
-            }
-        }
-    </script>
+    <script src="index.js"></script>
 </body>
 </html>

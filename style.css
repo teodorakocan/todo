@@ -1,3 +1,7 @@
+body{
+  background-color:rgb(234, 238, 238);
+}
+
 .header { grid-area: header; }
 .newTasks { grid-area: main; }
 .header h1{
@@ -53,6 +57,7 @@
   background-color: white;
   border: none;
   margin-left: 120px;
+
 }
 
 .checkbox{
@@ -114,4 +119,17 @@
   font-size: 24px;
   width: 60%;
   margin: auto;
+}
+
+.taskarea{
+  float:left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100px;
+  display: block;
+  overflow: hidden
+}
+
+.taskarea:hover{
+  overflow: visible;
 }
