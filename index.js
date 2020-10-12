@@ -7,12 +7,13 @@ let numberOfActiveTasks = 0;
 const buttonAll = document.getElementById('all');
 const buttonCompleted = document.getElementById('completed');
 const buttonActive = document.getElementById(ACTIVE_CLASS);
+const allTaskElements = document.getElementById('tasks');
 
 const labelNumberOfActiveTasks = document.createElement('label');
 document.querySelector('#number').appendChild(labelNumberOfActiveTasks);
 
 const input = document.getElementById('addTask');
-input.addEventListener('keyup', function (event) {
+input.addEventListener('keyup', function(event) {
     if (event.keyCode === 13) {
         event.preventDefault();
         if (input.value !== '') {
@@ -25,20 +26,16 @@ input.addEventListener('keyup', function (event) {
 init();
 
 function init() {
-    const tasksString = localStorage.getItem('tasks');
-
-    if (!tasksString) {
-        localStorage.setItem(TASK_KEY, []);
-    } else {
-        tasks = JSON.parse(tasksString);
-        localStorage.setItem(TASK_KEY, JSON.stringify(tasks));
-        for (let i = 0; i < tasks.length; i++) {
-            renderTask(tasks[i]);
-            if (!tasks[i].completed) {
+    const tasksString = localStorage.getItem('tasks') || '[]';
+    tasks = JSON.parse(tasksString);
+    tasks
+        .forEach(function(currentTask) {
+            if (!currentTask.completed) {
                 numberOfActiveTasks++;
-            }
-        }
-    }
+            };
+            renderTask(currentTask);
+        });
+
     renderNumberOfActiveTasks();
 }
 
@@ -52,23 +49,19 @@ function addTask(name) {
 }
 
 function deleteTask(value) {
-    const deleted = [];
-    const index = tasks.indexOf(value);
+    const deletedIndex = tasks.indexOf(value);
 
-    if (!tasks[index].completed) {
+    if (!tasks[deletedIndex].completed) {
         numberOfActiveTasks--;
     }
 
-    for (let i = 0; i < tasks.length; i++) {
-        if (index != i) {
-            deleted.push(tasks[i]);
-        }
-    }
+    tasks = tasks.filter((currentTask, currentIndex) =>
+        currentIndex !== deletedIndex
+    );
 
-    tasks = deleted;
     localStorage.setItem(TASK_KEY, JSON.stringify(tasks));
-    renderTasks();
     renderNumberOfActiveTasks();
+    reloadPage();
 }
 
 function crossTask(value) {
@@ -83,7 +76,10 @@ function crossTask(value) {
     localStorage.setItem(TASK_KEY, JSON.stringify(tasks));
 
     renderNumberOfActiveTasks();
+    reloadPage();
+}
 
+function reloadPage() {
     if (buttonAll.classList.contains(ACTIVE_CLASS)) {
         allTasks();
     } else if (buttonCompleted.classList.contains(ACTIVE_CLASS)) {
@@ -99,9 +95,7 @@ function allTasks() {
     buttonActive.classList.remove(ACTIVE_CLASS);
 
     clearTaskElements();
-    for (let i = 0; i < tasks.length; i++) {
-        renderTask(tasks[i]);
-    }
+    tasks.forEach(renderTask);
 }
 
 function activeTasks() {
@@ -111,11 +105,9 @@ function activeTasks() {
 
     clearTaskElements();
 
-    for (let i = 0; i < tasks.length; i++) {
-        if (!tasks[i].completed) {
-            renderTask(tasks[i]);
-        }
-    }
+    tasks
+        .filter((task) => !task.completed)
+        .forEach(renderTask);
 }
 
 function completedTasks() {
@@ -125,15 +117,12 @@ function completedTasks() {
 
     clearTaskElements();
 
-    for (let i = 0; i < tasks.length; i++) {
-        if (tasks[i].completed) {
-            renderTask(tasks[i]);
-        }
-    }
+    tasks
+        .filter((task) => task.completed)
+        .forEach(renderTask);
 }
 
 function clearTaskElements() {
-    const allTaskElements = document.getElementById('tasks');
     while (allTaskElements.children.length > 0) {
         document.getElementById(allTaskElements.children[0].id).remove();
     }
@@ -146,32 +135,43 @@ function renderNumberOfActiveTasks() {
 function renderTask(value) {
     const newTask = document.createElement('div');
     newTask.setAttribute('id', 'div_' + tasks.indexOf(value));
-    newTask.style.backgroundColor = 'white';
-    newTask.classList.add('task');
-    document.querySelector('#tasks').appendChild(newTask);
+    newTask.classList.add('flex-tasks')
+    document.querySelector('#tasks').prepend(newTask);
+
+    const inputDiv = document.createElement('div');
+    inputDiv.setAttribute('id', 'input_div_' + tasks.indexOf(value));
+    document.querySelector('#div_' + tasks.indexOf(value)).appendChild(inputDiv);
 
     const input = document.createElement('input');
     input.setAttribute('type', 'checkbox');
     input.setAttribute('id', 'input_' + tasks.indexOf(value));
-    input.classList.add('checkbox')
-    input.onchange = function () {
+    input.onchange = function() {
         crossTask(value);
     };
-    document.querySelector('#div_' + tasks.indexOf(value)).appendChild(input);
+    document.querySelector('#input_div_' + tasks.indexOf(value)).appendChild(input);
+
+    const labelDiv = document.createElement('div');
+    labelDiv.setAttribute('id', 'label_div_' + tasks.indexOf(value));
+    labelDiv.classList.add('taskName');
+    document.querySelector('#div_' + tasks.indexOf(value)).appendChild(labelDiv);
 
     const task = document.createElement('label');
     task.innerText = value.name;
     task.setAttribute('id', tasks.indexOf(value));
-    task.classList.add('taskarea')
-    document.querySelector('#div_' + tasks.indexOf(value)).appendChild(task);
+    task.classList.add('trimName');
+    document.querySelector('#label_div_' + tasks.indexOf(value)).appendChild(task);
 
-    const deletebtn = document.createElement('button');
-    deletebtn.innerHTML = '<i class = "fa fa-close"></i>';
-    deletebtn.setAttribute('id', 'deletebtn');
-    deletebtn.onclick = function () {
+    const buttonDiv = document.createElement('div');
+    buttonDiv.setAttribute('id', 'button_div_' + tasks.indexOf(value));
+    document.querySelector('#div_' + tasks.indexOf(value)).appendChild(buttonDiv);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.innerHTML = '<i class = "fa fa-close"></i>';
+    deleteButton.setAttribute('id', 'deleteButton');
+    deleteButton.onclick = function() {
         deleteTask(value);
     };
-    document.querySelector('#div_' + tasks.indexOf(value)).appendChild(deletebtn);
+    document.querySelector('#button_div_' + tasks.indexOf(value)).appendChild(deleteButton);
 
     if (value.completed) {
         task.style.textDecoration = 'line-through'
