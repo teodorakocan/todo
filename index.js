@@ -6,14 +6,14 @@ let numberOfActiveTasks = 0;
 
 const buttonAll = document.getElementById('all');
 const buttonCompleted = document.getElementById('completed');
-const buttonActive = document.getElementById(ACTIVE_CLASS);
+const buttonActive = document.getElementById('active');
 const allTaskElements = document.getElementById('tasks');
 
 const labelNumberOfActiveTasks = document.createElement('label');
 document.querySelector('#number').appendChild(labelNumberOfActiveTasks);
 
 const input = document.getElementById('addTask');
-input.addEventListener('keyup', function(event) {
+input.addEventListener('keyup', (event) => {
     if (event.keyCode === 13) {
         event.preventDefault();
         if (input.value !== '') {
@@ -29,7 +29,7 @@ function init() {
     const tasksString = localStorage.getItem('tasks') || '[]';
     tasks = JSON.parse(tasksString);
     tasks
-        .forEach(function(currentTask) {
+        .forEach((currentTask) => {
             if (!currentTask.completed) {
                 numberOfActiveTasks++;
             };
@@ -76,10 +76,10 @@ function crossTask(value) {
     localStorage.setItem(TASK_KEY, JSON.stringify(tasks));
 
     renderNumberOfActiveTasks();
-    reloadPage();
+    reloadTasks();
 }
 
-function reloadPage() {
+function reloadTasks() {
     if (buttonAll.classList.contains(ACTIVE_CLASS)) {
         allTasks();
     } else if (buttonCompleted.classList.contains(ACTIVE_CLASS)) {
@@ -158,7 +158,7 @@ function renderTask(value) {
     const task = document.createElement('label');
     task.innerText = value.name;
     task.setAttribute('id', tasks.indexOf(value));
-    task.classList.add('trimName');
+    task.classList.add('trimText');
     document.querySelector('#label_div_' + tasks.indexOf(value)).appendChild(task);
 
     const buttonDiv = document.createElement('div');

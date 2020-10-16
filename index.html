@@ -9,26 +9,27 @@
     <title>VanillaJS &#8226; TodoMVC</title>
 </head>
 
-<body class='body-container'>
+<body class="body-container">
     <div>
         <h1>todos</h1>
-        <input type='text' id='addTask' placeholder='What needs to be done?'>
+        <input type="text" id="addTask" placeholder="What needs to be done?">
     </div>
     <div>
-        <div id='tasks' class='tasks-container'></div>
+        <div id="tasks" class="tasks-container"></div>
         <div>
-            <div class='filterBar-container'>
-                <div id='number'></div>
+            <div class="filterBar-container">
+                <div id="number"></div>
                 <div>
-                    <div id='filters'>
-                        <button type='button' class='active' id='all' onclick='allTasks()'>All</button>
-                        <button type='button' id='active' onclick='activeTasks()'>Active</button>
-                        <button type='button' id='completed' onclick='completedTasks()'>Completed</button>
+                    <div id="filters">
+                        <button type="button" class="active" id="all" onclick="allTasks()">All</button>
+                        <button type="button" id="active" onclick="activeTasks()">Active</button>
+                        <button type="button" id="completed" onclick="completedTasks()">Completed</button>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <script src='index.js'></script>
+        <script src="index.js"></script>
 </body>
 
 </html>
