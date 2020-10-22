@@ -61,7 +61,7 @@ function deleteTask(value) {
 
     localStorage.setItem(TASK_KEY, JSON.stringify(tasks));
     renderNumberOfActiveTasks();
-    reloadPage();
+    reloadTasks();
 }
 
 function crossTask(value) {
@@ -158,7 +158,7 @@ function renderTask(value) {
     const task = document.createElement('label');
     task.innerText = value.name;
     task.setAttribute('id', tasks.indexOf(value));
-    task.classList.add('trimText');
+    task.classList.add('hideText');
     document.querySelector('#label_div_' + tasks.indexOf(value)).appendChild(task);
 
     const buttonDiv = document.createElement('div');

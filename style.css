@@ -116,14 +116,18 @@ input[type=checkbox] {
     background-color: rgb(70, 132, 168);
 }
 
-.trimText {
+.taskName {
     display: flex;
     flex: 1;
     overflow: hidden;
 }
 
-.trimText {
+.hideText {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+.taskName :hover {
+    overflow: visible;
 }
